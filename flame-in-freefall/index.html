@@ -3,424 +3,427 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Incident File 41-07</title>
+<title>Flame in Freefall</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Fire safety for Moon and Mars crews, told as a Moon-base incident file built from NASA microgravity combustion research.">
+<meta name="description" content="A cinematic story in four gravities: scroll from Earth to orbit and watch fire change, with the NASA research behind every scene.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;500;800&family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: an incident dossier. A live combustion chamber opens the file, then a timestamped log
-   with evidence in the margin, a decision drill, a tabbed evidence locker, and an oxygen ladder. */
+/* Layout: a film you scroll. Fixed letterbox bars carry the HUD (title, chapter, timecode, gravity).
+   A fixed flame burns behind every scene. Opening titles -> four chapters (1 g, 0.38 g, 0.17 g, 0 g)
+   -> end credits -> a post-credits lab. Gravity drives the sky colour, the flame and the drift of the text.
+   Single dark theme by choice: it's a screening room. */
 :root{
-  --paper:#E4E7EC;      /* cool regolith grey */
-  --sheet:#F1F3F6;      /* raised file sheet */
-  --ink:#141820;
-  --muted:#596170;
-  --rule:#C2C8D2;
-  --hazard:#D9480F;     /* signal orange: hot flame, warnings */
-  --cool:#1B6FA8;       /* cool blue flame */
-  --ok:#2B8A3E;
-  --chamber:#05070B;    /* the lab viewport is dark in both themes */
-  --chamber-ink:#D7DEE9;
-  --chamber-muted:#7D8797;
-  --chamber-rule:#1E2532;
-  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
-  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
-  --gut:max(16px, env(safe-area-inset-left, 0px));
-  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:dark;
+  --bg:#13223C;                 /* animated per chapter */
+  --ink:#F4EFE7;
+  --muted:rgba(244,239,231,.62);
+  --faint:rgba(244,239,231,.14);
+  --ember:#FF8A3D;
+  --blue:#8CCFFF;
+  --ok:#86E3A8;
+  --black:#000;
+  --bar:clamp(34px,6.5vh,64px);
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#0C0F15; --sheet:#131821; --ink:#E6E9EF; --muted:#8C95A5; --rule:#262D3A;
-    --hazard:#FF7A33; --cool:#5CC2FF; --ok:#5FD07A; color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#0C0F15; --sheet:#131821; --ink:#E6E9EF; --muted:#8C95A5; --rule:#262D3A;
-  --hazard:#FF7A33; --cool:#5CC2FF; --ok:#5FD07A; color-scheme:dark;
-}
-
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{
-  margin:0;background:var(--paper);color:var(--ink);
-  font:400 16px/1.6 var(--body);
-  padding-left:var(--gut);padding-right:var(--gut);
-  -webkit-font-smoothing:antialiased;
-}
-a{color:inherit;text-underline-offset:3px}
-a:hover{color:var(--hazard)}
-:focus-visible{outline:2px solid var(--hazard);outline-offset:3px;border-radius:2px}
-.wrap{max-width:1160px;margin:0 auto}
-.mono{font-family:var(--mono)}
-.label{font:500 11.5px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-h1,h2,h3{text-wrap:balance;margin:0}
-h2{font:900 clamp(40px,6.4vw,76px)/.92 var(--display);text-transform:uppercase;letter-spacing:.005em}
-h3{font:700 26px/1.05 var(--display);text-transform:uppercase;letter-spacing:.01em}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.62 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--faint)}
+a:hover{color:var(--ember);text-decoration-color:currentColor}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:3px}
+h1,h2,h3{margin:0;text-wrap:balance}
 p{margin:0}
+.s{font:italic 400 1.06em/1 var(--serif);color:var(--ember)}
 
-/* ---------- top bar ---------- */
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--paper);border-bottom:1px solid var(--rule);margin:0 calc(-1 * var(--gut)) 0 calc(-1 * var(--gut-r));padding:0 var(--gut-r) 0 var(--gut)}
-.bar-in{max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:20px;min-height:56px}
-.file-id{display:flex;align-items:center;gap:10px;font:600 13px/1 var(--mono);letter-spacing:.06em;white-space:nowrap;text-decoration:none}
-.file-id i{width:10px;height:10px;border-radius:50%;background:var(--cool);box-shadow:0 0 0 3px color-mix(in srgb,var(--cool) 25%,transparent)}
-.bar nav{display:flex;gap:18px;margin-inline-start:auto;flex-wrap:wrap}
-.bar nav a{font:500 13px/1 var(--mono);text-decoration:none;color:var(--muted);letter-spacing:.04em}
-.bar nav a:hover{color:var(--ink)}
-@media (max-width:820px){.bar nav{display:none}}
+/* ---------- screening-room layers ---------- */
+#flame{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(130% 90% at 50% 50%,transparent 45%,rgba(0,0,0,.55))}
+.grain{position:fixed;inset:-50%;z-index:1;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 
-/* ---------- hero / chamber ---------- */
-.hero{padding-block:44px 28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:40px;align-items:start}
-.hero-copy{display:grid;gap:22px;min-width:0;padding-top:10px}
-.hero h1{font:900 clamp(60px,9.2vw,128px)/.86 var(--display);text-transform:uppercase;letter-spacing:-.005em}
-.hero h1 em{font-style:normal;color:var(--cool);display:block}
-.lead{font-size:18px;line-height:1.6;max-width:56ch;color:var(--ink)}
-.lead b{font-weight:600}
-.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.facts div{padding:14px 12px 14px 0;display:grid;gap:4px;min-width:0}
-.facts div+div{border-inline-start:1px solid var(--rule);padding-inline-start:12px}
-.facts b{font:700 34px/1 var(--display);font-variant-numeric:tabular-nums}
-.facts span{font-size:13px;line-height:1.4;color:var(--muted)}
-
-.chamber{background:var(--chamber);color:var(--chamber-ink);border-radius:14px;overflow:hidden;display:grid;min-width:0;box-shadow:0 30px 60px -30px rgba(5,7,11,.55)}
-.ch-head{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--chamber-rule);font:500 11.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--chamber-muted)}
-.ch-head .rec{color:#ff6b5b;display:flex;align-items:center;gap:7px}
-.ch-head .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.4s steps(2) infinite}
+/* letterbox bars with HUD */
+.bar{position:fixed;left:0;right:0;z-index:20;background:var(--black);display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font:400 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.bar.top{top:0;height:calc(var(--bar) + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px)}
+.bar.bot{bottom:0;height:calc(var(--bar) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.bar b{color:var(--ink);font-weight:600}
+.bar .rec{display:inline-flex;align-items:center;gap:8px}
+.bar .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:#ff4b3e;animation:blink 1.6s steps(2) infinite}
 @keyframes blink{50%{opacity:.15}}
-@media (prefers-reduced-motion: reduce){.ch-head .rec::before{animation:none}}
-.viewport{position:relative;aspect-ratio:16/11;max-width:100%}
-.viewport canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.hud{position:absolute;inset:auto 14px 12px 14px;display:flex;justify-content:space-between;gap:10px;font:500 12px/1.35 var(--mono);color:var(--chamber-muted);pointer-events:none}
-.hud b{color:var(--chamber-ink);font-weight:600;display:block;font-size:13px}
-.hud .state-out b{color:#ff8d6b}
-.reticle{position:absolute;inset:0;pointer-events:none;background:
-  linear-gradient(var(--chamber-rule),var(--chamber-rule)) center/1px 100% no-repeat,
-  linear-gradient(var(--chamber-rule),var(--chamber-rule)) center/100% 1px no-repeat;opacity:.55}
-.reignite{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font:600 13px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:#ff7a33;color:#120700;border:0;border-radius:999px;padding:12px 18px;cursor:pointer}
-.controls{display:grid;gap:16px;padding:16px;border-top:1px solid var(--chamber-rule)}
-.ctl{display:grid;gap:8px}
-.ctl-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13.5px}
-.ctl-top output{font:600 13px/1 var(--mono);color:#ffb37a;font-variant-numeric:tabular-nums}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font:500 12.5px/1 var(--mono);background:transparent;color:var(--chamber-ink);border:1px solid #2c3546;border-radius:999px;padding:8px 11px;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--chamber-ink);color:var(--chamber);border-color:var(--chamber-ink)}
-.chip.kill{border-color:#ff7a33;color:#ffb37a}
-.chip.kill:hover{background:#ff7a33;color:#120700}
-input[type=range]{width:100%;accent-color:#ff7a33;margin:0}
-.ctl-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:520px){.ctl-row{grid-template-columns:1fr}}
-.note{padding:14px 16px;border-top:1px solid var(--chamber-rule);font-size:14px;line-height:1.55;color:var(--chamber-ink);min-height:4.6em}
-.note .src{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#ffb37a;display:block;margin-bottom:6px}
+.tc{font-variant-numeric:tabular-nums}
+.gmeter{display:flex;align-items:center;gap:12px}
+.gline{width:120px;height:2px;background:var(--faint);position:relative}
+.gline i{position:absolute;inset:0 auto 0 0;background:var(--ember);width:0}
+@media (max-width:620px){.bar .hide-s{display:none}.gline{width:60px}.bar{letter-spacing:.12em}}
 
-@media (max-width:900px){.hero{grid-template-columns:1fr}.hero-copy{padding-top:0}}
+main{position:relative;z-index:2;max-width:1240px;margin:0 auto}
 
-/* ---------- section scaffolding ---------- */
-section.block{padding-block:72px 8px}
-.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end;margin-bottom:36px}
-.sec-head .sub{color:var(--muted);font-size:17px;max-width:52ch}
-.sec-head .label{grid-column:1/-1}
-@media (max-width:820px){.sec-head{grid-template-columns:1fr}}
+/* ---------- opening titles ---------- */
+.opening{min-height:100vh;display:grid;place-items:center;text-align:center;padding-block:calc(var(--bar) + 40px)}
+.opening .stack{display:grid;gap:26px;justify-items:center}
+.presents{font:400 12px/1.6 var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+.title{font:200 clamp(44px,9.5vw,148px)/.92 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.title b{font-weight:800;display:block;letter-spacing:-.02em}
+.tagline{font:italic 400 clamp(22px,3vw,34px)/1.2 var(--serif);color:var(--ink)}
+.begin{font:400 11px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;color:var(--muted);display:grid;justify-items:center;gap:12px;text-decoration:none}
+.begin::after{content:"";width:1px;height:46px;background:linear-gradient(var(--ink),transparent);animation:drop 2.2s ease-in-out infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.fade{animation:fadeup 1.4s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes fadeup{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
 
-/* ---------- transcript ---------- */
-.fiction{display:inline-flex;gap:10px;align-items:center;font-size:14px;color:var(--muted);border:1px dashed var(--rule);border-radius:8px;padding:10px 14px;margin-bottom:28px;max-width:70ch}
-.fiction b{color:var(--hazard);font:600 11px/1 var(--mono);letter-spacing:.1em;white-space:nowrap}
-.log{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
-.entry{display:grid;grid-template-columns:110px minmax(0,1.25fr) minmax(0,1fr);gap:0 28px;padding:22px 0;border-bottom:1px solid var(--rule)}
-.entry time{font:600 15px/1.4 var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);direction:ltr;unicode-bidi:isolate}
-.entry.hot time{color:var(--hazard)}
-.say{display:grid;gap:6px;min-width:0}
-.who{font:600 11.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.line{font-size:19px;line-height:1.5}
-.line.sys{font-family:var(--mono);font-size:16px}
-.why{min-width:0;font-size:14.5px;line-height:1.55;color:var(--muted);border-inline-start:1px solid var(--rule);padding-inline-start:18px}
-.stamp{display:inline-block;font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cool);border:1.5px solid currentColor;border-radius:3px;padding:5px 7px;margin-bottom:8px;transform:rotate(-1.5deg)}
-.stamp.red{color:var(--hazard)}
-@media (max-width:820px){
-  .entry{grid-template-columns:1fr;gap:10px}
-  .why{border-inline-start:0;padding-inline-start:0;border-top:1px dashed var(--rule);padding-top:10px}
-}
-.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:36px;background:var(--ink);color:var(--paper);border-radius:14px;overflow:hidden}
-.rules div{padding:24px;display:grid;gap:10px;align-content:start}
-.rules div+div{border-inline-start:1px solid color-mix(in srgb,var(--paper) 18%,transparent)}
-.rules b{font:900 44px/1 var(--display);color:var(--hazard)}
-.rules h3{font-size:24px}
-.rules p{font-size:14.5px;opacity:.8}
-@media (max-width:820px){.rules{grid-template-columns:1fr}.rules div+div{border-inline-start:0;border-top:1px solid color-mix(in srgb,var(--paper) 18%,transparent)}}
+/* ---------- chapter cards ---------- */
+.chapter{min-height:100vh;display:grid;place-items:center;text-align:center;padding-block:calc(var(--bar) + 30px)}
+.chapter .stack{display:grid;gap:22px;justify-items:center;max-width:900px}
+.ch-no{font:400 12px/1 var(--mono);letter-spacing:.4em;text-transform:uppercase;color:var(--ember)}
+.ch-name{font:200 clamp(52px,10vw,160px)/.9 var(--display);letter-spacing:.12em;text-transform:uppercase;margin-right:-.12em}
+.ch-spec{font:400 13px/1.6 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.ch-line{font:italic 400 clamp(22px,2.8vw,32px)/1.3 var(--serif);max-width:30ch}
+.rule{width:64px;height:1px;background:var(--ink);opacity:.5}
 
-/* ---------- drill ---------- */
-.drill{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:24px}
-@media (max-width:900px){.drill{grid-template-columns:1fr}}
-.card{background:var(--sheet);border:1px solid var(--rule);border-radius:14px;padding:28px;min-width:0}
-.q-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-.dots{display:flex;gap:6px}
-.dots i{width:22px;height:6px;border-radius:3px;background:var(--rule)}
-.dots i.right{background:var(--ok)}
-.dots i.wrong{background:var(--hazard)}
-.dots i.now{background:var(--ink)}
-.q{font-size:22px;line-height:1.4;font-weight:500;margin-bottom:20px;max-width:46ch}
+/* ---------- narration scenes ---------- */
+.scene{min-height:90vh;display:grid;align-content:center;gap:28px;padding-block:14vh}
+.vo{max-width:620px;display:grid;gap:22px}
+.vo .lbl{font:400 11px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.vo h2{font:800 clamp(32px,4.6vw,60px)/1.02 var(--display);letter-spacing:-.03em}
+.vo .lead{font-size:21px;line-height:1.55}
+.vo p.m{color:var(--muted)}
+@media (max-width:900px){.vo{max-width:none;background:rgba(5,6,10,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:16px;padding:22px}}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;border-top:1px solid var(--faint);padding-top:18px}
+.facts b{display:block;font:500 28px/1 var(--display);letter-spacing:-.02em;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.facts span{font-size:14px;color:var(--muted);line-height:1.45;display:block}
+@media (max-width:520px){.facts{grid-template-columns:1fr}}
+.flash{border-left:2px solid var(--ember);padding:4px 0 4px 20px;display:grid;gap:8px}
+.flash .when{font:600 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ember)}
+.flash p{color:var(--muted)}
+.flash strong{color:var(--ink);font-weight:600}
+
+.ladder{display:grid;gap:14px}
+.rung{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:14px;align-items:center}
+.rung b{font-weight:600;font-size:15px;display:block;line-height:1.25}
+.rung small{font:400 12px var(--mono);color:var(--muted)}
+.meter{height:8px;border-radius:4px;background:var(--faint);position:relative;overflow:hidden}
+.meter i{position:absolute;inset:0 auto 0 0;width:var(--v);background:var(--c);border-radius:4px}
+.rung em{font:500 18px/1 var(--display);font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:520px){.rung{grid-template-columns:1fr 60px}.rung .meter{grid-column:1/-1;grid-row:2}}
+
+/* ---------- subtitle scenes (the incident) ---------- */
+.reel-note{max-width:640px;margin:0 auto;text-align:center;font-size:14px;color:var(--muted);border:1px dashed var(--faint);border-radius:12px;padding:12px 16px}
+.reel-note b{font:600 10.5px var(--mono);letter-spacing:.2em;color:var(--ember);margin-right:8px}
+.shot{min-height:62vh;display:grid;align-content:center;justify-items:center;text-align:center;gap:18px;padding-block:6vh}
+.slate{font:400 11px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.slate .t{color:var(--ink);font-variant-numeric:tabular-nums}
+.shot.hot .slate .t{color:var(--ember)}
+.speaker{font:600 12px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--blue)}
+.sub{font:600 clamp(22px,3vw,34px)/1.35 var(--body);max-width:24em;text-shadow:0 2px 0 rgba(0,0,0,.55),0 0 30px rgba(0,0,0,.6)}
+.sub.sys{font:400 clamp(16px,2vw,21px)/1.5 var(--mono);letter-spacing:.02em;color:#CFE7FF}
+.dnote{max-width:44em;font-size:14.5px;line-height:1.55;color:var(--muted);background:rgba(0,0,0,.28);border-radius:10px;padding:10px 14px}
+.dnote b{font:600 10.5px/1 var(--mono);letter-spacing:.18em;color:var(--ember);margin-right:8px}
+
+/* ---------- orbit ---------- */
+.letters span{display:inline-block;will-change:transform}
+.drift{will-change:transform}
+.cast-h{display:grid;gap:10px;justify-items:center;text-align:center;margin-bottom:34px}
+.cast-h h2{font:800 clamp(30px,4.2vw,54px)/1.05 var(--display);letter-spacing:-.03em}
+.cast-h p{font:400 11px/1 var(--mono);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.specimens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:940px;margin:0 auto}
+@media (max-width:640px){.specimens{grid-template-columns:1fr}}
+.spec{background:rgba(255,255,255,.04);border:1px solid var(--faint);border-radius:20px;padding:22px;display:grid;gap:12px;align-content:start;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);min-width:0}
+.spec-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.spec-top h3{font:500 24px/1.1 var(--display);letter-spacing:-.01em}
+.spec-top span{font:400 11px/1.3 var(--mono);color:var(--muted);text-align:right}
+.spec p{font-size:15px;line-height:1.55}
+.spec .lesson{font-size:14.5px;color:var(--muted);border-top:1px solid var(--faint);padding-top:10px}
+.spec .lesson strong{color:var(--ember);font:600 10.5px var(--mono);letter-spacing:.16em;display:block;margin-bottom:4px}
+.spec .src{font:400 12px/1.5 var(--mono);color:var(--muted)}
+.spec.wide{grid-column:1/-1}
+
+.drill{background:rgba(5,6,10,.5);border:1px solid var(--faint);border-radius:24px;padding:28px;max-width:760px;margin:0 auto;display:grid;gap:18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.d-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.d-meta .lbl{font:400 11px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--ember)}
+.pips{display:flex;gap:6px}
+.pips i{width:26px;height:4px;border-radius:2px;background:var(--faint)}
+.pips i.right{background:var(--ok)}.pips i.wrong{background:var(--ember)}.pips i.now{background:var(--ink)}
+.q{font:italic 400 30px/1.25 var(--serif)}
 .opts{display:grid;gap:10px}
-.opt{display:flex;gap:14px;align-items:flex-start;text-align:start;font:inherit;font-size:16px;line-height:1.45;color:var(--ink);background:var(--paper);border:1.5px solid var(--rule);border-radius:10px;padding:14px 16px;cursor:pointer}
-.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt{display:flex;gap:14px;text-align:left;font:500 16px/1.45 var(--body);color:var(--ink);background:transparent;border:1px solid var(--faint);border-radius:14px;padding:14px 16px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink);background:rgba(255,255,255,.04)}
 .opt .k{font:600 13px/1.6 var(--mono);color:var(--muted)}
 .opt:disabled{cursor:default}
-.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--paper))}
-.opt.wrong{border-color:var(--hazard);background:color-mix(in srgb,var(--hazard) 9%,var(--paper))}
-.verdict{margin-top:18px;padding-top:18px;border-top:1px dashed var(--rule);display:grid;gap:12px}
-.verdict p{font-size:15.5px;line-height:1.6}
-.verdict .tag{font:700 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
-.btn{justify-self:start;font:600 14px/1 var(--body);background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:12px 18px;cursor:pointer}
-.side{display:grid;gap:14px;align-content:start}
-.side .big{font:900 92px/.9 var(--display);font-variant-numeric:tabular-nums}
-.side .big small{font-size:40px;color:var(--muted)}
-.side p{color:var(--muted);font-size:15px}
+.opt.right{border-color:var(--ok);background:rgba(134,227,168,.09)}
+.opt.wrong{border-color:var(--ember);background:rgba(255,138,61,.09)}
+.verdict{display:grid;gap:12px;border-top:1px dashed var(--faint);padding-top:16px}
+.verdict .tag{font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase}
+.btn{justify-self:start;font:600 15px/1 var(--body);background:var(--ink);color:#0A0B10;border:0;border-radius:999px;padding:13px 20px;cursor:pointer}
+.score-big{font:800 96px/.9 var(--display);letter-spacing:-.04em}
+.score-big small{font-size:36px;color:var(--muted)}
 
-/* ---------- locker ---------- */
-.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:0;scrollbar-width:thin}
-.tab{flex:0 0 auto;font:600 13px/1 var(--mono);letter-spacing:.04em;color:var(--muted);background:var(--paper);border:1px solid var(--rule);border-bottom:0;border-radius:10px 10px 0 0;padding:13px 16px;cursor:pointer}
-.tab[aria-selected="true"]{background:var(--sheet);color:var(--ink);position:relative;top:1px}
-.tab .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-inline-end:8px;vertical-align:1px}
-.folder{background:var(--sheet);border:1px solid var(--rule);border-radius:0 14px 14px 14px;padding:30px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:30px}
-@media (max-width:820px){.folder{grid-template-columns:1fr;padding:22px}}
-.folder h3{font-size:40px;margin-bottom:4px}
-.folder .full{color:var(--muted);margin-bottom:18px}
-.folder .finding{font-size:17.5px;line-height:1.6;margin-bottom:18px}
-.lesson{background:var(--paper);border-radius:10px;padding:16px 18px;display:grid;gap:6px}
-.lesson .label{color:var(--hazard)}
-.spec{display:grid;gap:0;margin:0}
-.spec div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--rule)}
-.spec dt{font:500 11.5px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.spec dd{margin:0;font-size:14.5px;min-width:0}
-.rel{display:flex;gap:4px;align-items:center}
-.rel i{width:16px;height:16px;border-radius:3px;background:var(--rule)}
-.rel i.on{background:var(--hazard)}
-.srcs{display:grid;gap:6px;margin-top:16px;font-size:14px}
+.epilogue{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;max-width:1000px;margin:0 auto;text-align:center}
+.epilogue div{display:grid;gap:12px;justify-items:center;align-content:start}
+.epilogue b{font:200 64px/1 var(--display);color:var(--ember)}
+.epilogue h3{font:500 20px/1.2 var(--display)}
+.epilogue p{color:var(--muted);font-size:15.5px;max-width:26ch}
+@media (max-width:760px){.epilogue{grid-template-columns:1fr}}
 
-/* ---------- oxygen ladder ---------- */
-.ladder{display:grid;gap:4px;border-top:2px solid var(--ink)}
-.rung{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) 70px;gap:18px;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)}
-.rung .nm b{display:block;font-weight:600}
-.rung .nm span{font:500 12.5px/1.4 var(--mono);color:var(--muted)}
-.track{height:26px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%);border-radius:3px;position:relative;overflow:hidden}
-.fill{position:absolute;inset-block:0;inset-inline-start:0;width:var(--v);background:var(--c);border-radius:3px}
-.rung em{font:900 30px/1 var(--display);font-style:normal;text-align:end;font-variant-numeric:tabular-nums}
-@media (max-width:620px){.rung{grid-template-columns:1fr 60px}.rung .track{grid-column:1/-1;grid-row:2}}
-.ladder-note{font-size:13.5px;color:var(--muted);margin-top:14px}
+/* ---------- end credits ---------- */
+.credits{position:relative;z-index:2;max-width:760px;margin:0 auto;padding-block:30vh 20vh;text-align:center;display:grid;gap:56px}
+.credits .fin{font:200 clamp(48px,9vw,120px)/1 var(--display);letter-spacing:.3em;text-transform:uppercase;margin-right:-.3em}
+.role{display:grid;gap:10px}
+.role h4{margin:0;font:400 11px/1 var(--mono);letter-spacing:.32em;text-transform:uppercase;color:var(--muted)}
+.role p{font:400 18px/1.6 var(--body)}
+.role p i{font-family:var(--serif);font-size:1.15em;color:var(--muted)}
+.role ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px}
+.disclaimer{font-size:13.5px;color:var(--muted);max-width:60ch;margin:0 auto}
 
-/* ---------- earth ---------- */
-.earth{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:2px solid var(--ink)}
-.earth div{padding:22px 20px 22px 0;display:grid;gap:10px;align-content:start}
-.earth div+div{padding-inline-start:20px;border-inline-start:1px solid var(--rule)}
-.earth .label{color:var(--cool)}
-.earth p{font-size:15px;color:var(--muted)}
-@media (max-width:900px){.earth{grid-template-columns:1fr 1fr}.earth div:nth-child(3){border-inline-start:0;padding-inline-start:0}.earth div:nth-child(n+3){border-top:1px solid var(--rule)}}
-@media (max-width:520px){.earth{grid-template-columns:1fr}.earth div,.earth div+div{border-inline-start:0;padding-inline-start:0}.earth div+div{border-top:1px solid var(--rule)}}
+/* ---------- post-credits lab ---------- */
+.lab-scene{position:relative;z-index:2;max-width:1240px;margin:0 auto;min-height:100vh;display:grid;align-content:center;gap:26px;padding-block:calc(var(--bar) + 6vh) calc(var(--bar) + 10vh)}
+.lab{display:grid;gap:18px;max-width:560px;background:rgba(5,6,10,.6);border:1px solid var(--faint);border-radius:24px;padding:24px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ctl{display:grid;gap:8px}
+.ctl-top{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.ctl-top output{font:600 14px var(--mono);color:var(--ember);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--ember);margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 13px/1 var(--mono);color:var(--ink);background:transparent;border:1px solid var(--faint);border-radius:999px;padding:9px 13px;cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.chip.kill{border-color:var(--ember);color:var(--ember)}
+.chip.kill:hover{background:var(--ember);color:#160800}
+.readout{display:flex;justify-content:space-between;gap:16px;font:400 13px/1.4 var(--mono);color:var(--muted);border-top:1px solid var(--faint);padding-top:14px}
+.readout b{display:block;color:var(--ink);font-weight:600;font-size:15px}
+.readout .out b{color:var(--ember)}
+.note{font-size:15px;line-height:1.55;min-height:4.7em}
+.note .src{display:block;font:600 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
 
-/* ---------- footer ---------- */
-footer{margin-top:80px;border-top:1px solid var(--rule);padding-block:28px 40px;display:grid;gap:18px}
-.src-list{columns:2 320px;column-gap:40px;font-size:14px;margin:0;padding:0;list-style:none}
-.src-list li{break-inside:avoid;padding:6px 0;border-bottom:1px dotted var(--rule)}
-.colophon{font-size:13.5px;color:var(--muted);max-width:80ch}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .fade,.grain,.begin::after,.bar .rec::before{animation:none}
+}
 </style>
 </head>
 <body>
 
-<header class="bar">
-  <div class="bar-in">
-    <a class="file-id" href="#top"><i></i><span>INCIDENT FILE 41-07</span></a>
-    <nav aria-label="Sections">
-      <a href="#log">Log</a>
-      <a href="#drill">Your call</a>
-      <a href="#locker">Evidence</a>
-      <a href="#oxygen">Oxygen</a>
-    </nav>
-  </div>
-</header>
+<canvas id="flame" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
-<main class="wrap" id="top">
+<div class="bar top" aria-hidden="true">
+  <span><b>Flame in Freefall</b><span class="hide-s"> · a story in four gravities</span></span>
+  <span id="hudChapter">Opening titles</span>
+</div>
+<div class="bar bot">
+  <span class="rec tc" id="tc">00:00:00:00</span>
+  <span class="gmeter" aria-label="Current gravity"><span class="gline"><i id="gLine"></i></span><b class="tc" id="gRead">1.00 g</b></span>
+</div>
 
-  <!-- HERO: live chamber -->
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="label">NASA Space Apps 2026 · Flame in Freefall · Team Galaxy Exploration, Port Said</p>
-      <h1>Fire forgets <em>which way is up.</em></h1>
-      <p class="lead">Drag the gravity control. On Earth, hot gas rises and pulls the flame into a tall yellow teardrop. In orbit nothing rises, oxygen creeps in from every side, and the flame curls into a dim blue sphere. <b>Then switch the fans off and watch.</b></p>
-      <div class="facts">
-        <div><b>30%+</b><span>oxygen planned for Moon-habitat air</span></div>
-        <div><b>17%</b><span>lowest O₂ a flame survived in orbit (Earth: 18%)</span></div>
-        <div><b>1 cm/s</b><span>airflow at which flames starved in microgravity</span></div>
+<main>
+
+  <!-- ================= OPENING ================= -->
+  <section class="opening" data-chapter="Opening titles">
+    <div class="stack">
+      <p class="presents fade" style="--d:.2s">Team Galaxy Exploration · Port Said<br>presents</p>
+      <h1 class="title fade" style="--d:1s">Flame in <b>Freefall</b></h1>
+      <p class="tagline fade" style="--d:1.8s">A story in four gravities, and one fire that refuses to behave.</p>
+      <p class="presents fade" style="--d:2.4s">Based on NASA microgravity combustion research · NASA Space Apps Challenge 2026</p>
+      <a class="begin fade" style="--d:2.8s" href="#ch1">Scroll to begin</a>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER I: EARTH ================= -->
+  <section class="realm" data-g="1" data-bg="#13223C" data-o2="21" data-chapter="Chapter I · Earth">
+    <div class="chapter" id="ch1">
+      <div class="stack">
+        <p class="ch-no">Chapter I</p>
+        <h2 class="ch-name">Earth</h2>
+        <div class="rule"></div>
+        <p class="ch-spec">1 g · 14.7 psi · 21% oxygen</p>
+        <p class="ch-line">Where the fire learned everything it knows.</p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="vo">
+        <p class="lbl">Voice-over</p>
+        <h2>Fire knows which way is <span class="s">up.</span></h2>
+        <p class="lead">On Earth, gravity writes a flame's shape. Hot gas is lighter than the air around it, so it rises. That plume pulls fresh air in from below, stretches the flame into a teardrop, and lifts glowing soot that turns it yellow.</p>
+        <div class="facts">
+          <div><b>21%</b><span>oxygen in the air we breathe</span></div>
+          <div><b>14.7 psi</b><span>air pressure at sea level</span></div>
+          <div><b>1 g</b><span>the gravity nearly all fire-safety rules were written under</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="vo">
+        <p class="lbl">Flashback</p>
+        <div class="flash">
+          <span class="when">27 January 1967 · Apollo 1</span>
+          <p><strong>During a ground test, a cabin filled with pure oxygen let a fire spread in seconds.</strong> Three astronauts died. Every spacecraft fire rule written since begins on that day.</p>
+        </div>
+        <p class="m">Most of what we know about fire was learned at 1 g. Our story leaves it behind, one world at a time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER II: MARS ================= -->
+  <section class="realm" data-g="0.38" data-bg="#3A1910" data-o2="21" data-chapter="Chapter II · Mars">
+    <div class="chapter">
+      <div class="stack">
+        <p class="ch-no">Chapter II</p>
+        <h2 class="ch-name">Mars</h2>
+        <div class="rule"></div>
+        <p class="ch-spec">0.38 g · a third of the pull</p>
+        <p class="ch-line">The plume still rises. It just takes its time.</p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="vo">
+        <p class="lbl">Voice-over</p>
+        <h2>The flame starts to <span class="s">forget.</span></h2>
+        <p class="lead">Look behind the text. The flame is shorter now, wider, bluer at the base. Air arrives more lazily and less soot glows.</p>
+        <div class="flash">
+          <span class="when">The missing footage</span>
+          <p><strong>NASA's PSI database holds no flame data at Mars or Moon gravity yet.</strong> Future studies, LUCI and FM2, aim to film that gap. E-FIELD Flames used electric fields to mimic partial gravity. Until then, engineers estimate limits between what Earth and orbit tests show.</p>
+        </div>
+        <p class="m">Rocket engine fires are not in this film. Very fast combustion barely depends on gravity. This story is about fire in the rooms where crews live.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER III: MOON ================= -->
+  <section class="realm" data-g="0.17" data-bg="#1D1E24" data-o2="30" data-chapter="Chapter III · The Moon">
+    <div class="chapter">
+      <div class="stack">
+        <p class="ch-no">Chapter III</p>
+        <h2 class="ch-name">Moon</h2>
+        <div class="rule"></div>
+        <p class="ch-spec">0.17 g · 10.2 psi · 30% oxygen</p>
+        <p class="ch-line">Richer air than home. A crew of two. A panel behind the wall getting warm.</p>
+      </div>
+    </div>
+    <div class="scene">
+      <div class="vo">
+        <p class="lbl">Voice-over</p>
+        <h2>The air here burns <span class="s">hotter.</span></h2>
+        <p class="lead">With Artemis, people are going back to the Moon. Habitats and pressurized rovers are expected to breathe 30% oxygen or more at 10.2 psi or less. That's over 40% more oxygen than Earth air. The flame behind this text is running on it.</p>
+        <div class="ladder" aria-label="Oxygen share of the breathing gas">
+          <div class="rung"><div><b>Earth, sea level</b><small>14.7 psi</small></div><div class="meter"><i style="--v:21%;--c:rgba(244,239,231,.5)"></i></div><em>21%</em></div>
+          <div class="rung"><div><b>Moon habitat</b><small>≤ 10.2 psi</small></div><div class="meter"><i style="--v:30%;--c:var(--blue)"></i></div><em>30%+</em></div>
+          <div class="rung"><div><b>CFI-G in orbit</b><small>highest tested</small></div><div class="meter"><i style="--v:85%;--c:var(--ember)"></i></div><em>85%</em></div>
+          <div class="rung"><div><b>Spacesuit</b><small>≈ 4.3 psi</small></div><div class="meter"><i style="--v:100%;--c:var(--ink)"></i></div><em>≈100%</em></div>
+        </div>
       </div>
     </div>
 
-    <figure class="chamber" style="margin:0" aria-label="Interactive flame chamber">
-      <div class="ch-head"><span>Combustion chamber · teaching model</span><span class="rec">LIVE</span></div>
-      <div class="viewport" id="viewport">
-        <canvas id="flame" aria-hidden="true"></canvas>
-        <div class="reticle"></div>
-        <div class="hud">
-          <div><span>Shape</span><b id="hudShape">—</b></div>
-          <div style="text-align:end" id="hudStateBox"><span>State</span><b id="hudState">—</b></div>
-        </div>
-        <button class="reignite" id="reignite" type="button" hidden>Re-ignite</button>
+    <p class="reel-note"><b>DRAMATIZATION</b>Shackleton Station, 2041, is imagined. Names and small numbers are ours. Every behavior on screen was seen in a real NASA experiment or a real spaceflight fire, named under each line.</p>
+
+    <div id="incident">
+      <div class="shot"><p class="slate"><span class="t">T−00:00</span><span>Shackleton Station · Hab module</span></p><p class="speaker">Station computer</p><p class="sub sys">Cabin nominal. O₂ 30% at 10.2 psi.</p><p class="dnote"><b>BRIEF</b>The planned Moon-habitat atmosphere. More oxygen means easier ignition.</p></div>
+      <div class="shot"><p class="slate"><span class="t">T+00:00</span><span>Behind panel C-4</span></p><p class="speaker">Station computer</p><p class="sub sys">Wire bundle overheating. No alarm.</p><p class="dnote"><b>SAME</b>Much spacecraft smoke is under 500 nanometres. Neither the ionization nor the photoelectric detector caught every type reliably.</p></div>
+      <div class="shot"><p class="slate"><span class="t">T+01:30</span><span>Galley</span></p><p class="speaker">Engineer Nour</p><p class="sub">“I can smell something hot, and the detector is quiet.”</p><p class="dnote"><b>SAME</b>In low gravity smoke doesn't climb to the ceiling. On the ISS, detectors sit in the ventilation ducts.</p></div>
+      <div class="shot hot"><p class="slate"><span class="t">T+02:10</span><span>Panel C-4, open</span></p><p class="speaker">Engineer Nour</p><p class="sub">“A flame on the fabric sleeve. Small, round, almost blue. I can barely see it.”</p><p class="dnote"><b>ACME</b>Weak buoyancy means less soot, and soot is what glows yellow. Low-gravity flames are dim and easy to miss.</p></div>
+      <div class="shot hot"><p class="slate"><span class="t">T+02:40</span><span>Hab module</span></p><p class="speaker">Commander Youssef</p><p class="sub">“That sleeve passed its fire test on Earth. Why is it spreading?”</p><p class="dnote"><b>BASS-II</b>In orbit a flame survived at 17% O₂ where the same material needed 18% on Earth. <b>SAFFIRE</b>Earth results don't always carry over.</p></div>
+      <div class="shot hot"><p class="slate"><span class="t">T+03:00</span><span>Hab module</span></p><p class="speaker">Commander Youssef</p><p class="sub">“Kill the cabin fans. Now.”</p><p class="dnote"><b>BASS</b>Across 115 ISS burns, switching the airflow off put flames out quickly. Near 1 cm/s they starved.</p></div>
+      <div class="shot"><p class="slate"><span class="t">T+03:25</span><span>Silence</span></p><p class="speaker">Nour · Youssef</p><p class="sub">“Flame's gone.”<br>“It isn't out until the sensors say so.”</p><p class="dnote"><b>FLEX</b>After the visible flame died, fuel kept burning unseen as a cool flame at about 400–1,000 °F, making carbon monoxide and formaldehyde.</p></div>
+      <div class="shot hot"><p class="slate"><span class="t">T+04:00</span><span>Panel C-4</span></p><p class="speaker">Station computer</p><p class="sub sys">CO rising. Crew on masks. Extinguisher into the panel.</p><p class="dnote"><b>MIR 1997</b>An oxygen generator burned for about 14 minutes with six aboard. The crew used three extinguishers.</p></div>
+      <div class="shot"><p class="slate"><span class="t">T+45:00</span><span>All modules</span></p><p class="speaker">Station computer</p><p class="sub sys">Air scrubbed. Smoke cleared. Incident closed.</p><p class="dnote"><b>MIR 1997</b>Thick smoke stayed for about 45 minutes. Those lessons were built into the ISS.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER IV: ORBIT ================= -->
+  <section class="realm" data-g="0" data-bg="#04050B" data-o2="21" data-chapter="Chapter IV · Orbit">
+    <div class="chapter">
+      <div class="stack">
+        <p class="ch-no">Chapter IV</p>
+        <h2 class="ch-name">Orbit</h2>
+        <div class="rule"></div>
+        <p class="ch-spec">≈ 0 g · the International Space Station</p>
+        <h3 class="ch-line letters" id="forget" aria-label="Fire forgets which way is up.">Fire forgets which way is up.</h3>
       </div>
-      <div class="controls">
-        <div class="ctl">
-          <div class="ctl-top"><span>Gravity</span><output id="gOut">1.00 g</output></div>
-          <div class="chips" id="gChips">
-            <button class="chip" type="button" data-g="1">Earth 1 g</button>
-            <button class="chip" type="button" data-g="0.38">Mars 0.38 g</button>
-            <button class="chip" type="button" data-g="0.17">Moon 0.17 g</button>
-            <button class="chip" type="button" data-g="0">Orbit ≈0 g</button>
-          </div>
-          <input type="range" id="g" min="0" max="1" step="0.01" value="1" aria-label="Gravity">
-        </div>
-        <div class="ctl-row">
-          <div class="ctl">
-            <div class="ctl-top"><span>Oxygen in the air</span><output id="oOut">21%</output></div>
-            <input type="range" id="o2" min="15" max="40" step="1" value="21" aria-label="Oxygen percent">
-          </div>
-          <div class="ctl">
-            <div class="ctl-top"><span>Fan airflow</span><output id="fOut">8 cm/s</output></div>
-            <input type="range" id="flow" min="0" max="20" step="0.5" value="8" aria-label="Fan airflow">
-          </div>
-        </div>
-        <div class="chips"><button class="chip kill" type="button" id="killFans">Kill the fans</button></div>
+    </div>
+    <div class="scene">
+      <div class="vo">
+        <p class="lbl">Voice-over</p>
+        <h2 class="drift">Nothing <span class="s">rises.</span></h2>
+        <p class="lead drift">Oxygen reaches the flame only by drifting in from every side, or on a fan's breeze. The flame curls into a dim blue sphere. Look around: nothing on this screen is falling anymore either.</p>
+        <p class="m drift">This is where NASA lit fires on purpose to learn the new rules. Here are the witnesses.</p>
       </div>
-      <p class="note" id="note" aria-live="polite"></p>
-    </figure>
-  </section>
-
-  <!-- LOG -->
-  <section class="block" id="log">
-    <div class="sec-head">
-      <p class="label">The log · a training story</p>
-      <h2>Forty-five minutes at Shackleton Station</h2>
-      <p class="sub">A made-up fire at a base near the Moon's south pole. On one side, what the crew said. On the other, the real NASA result that explains it.</p>
     </div>
-    <p class="fiction"><b>FICTION</b><span>This is an imagined drill set in 2041. Names and small numbers are ours, but every behavior in it was seen in a real NASA experiment or a real spaceflight fire.</span></p>
 
-    <ol class="log">
-      <li class="entry">
-        <time>T−00:00</time>
-        <div class="say"><span class="who">Station system</span><p class="line sys">Cabin atmosphere nominal. O₂ 30% at 10.2 psi.</p></div>
-        <div class="why"><span class="stamp">Challenge brief</span><p>Lunar habitats and pressurized rovers are expected to run on 30% oxygen or more at ≤ 10.2 psi. That's over 40% more oxygen share than Earth air, so materials ignite more easily and burn harder.</p></div>
-      </li>
-      <li class="entry">
-        <time>T+00:00</time>
-        <div class="say"><span class="who">Station system</span><p class="line sys">Wire bundle behind panel C-4 overheating. No alarm.</p></div>
-        <div class="why"><span class="stamp">SAME</span><p>Much of the smoke from overheated spacecraft materials was under 500 nanometres. Neither the shuttle's ionization detector nor the ISS's photoelectric one caught every type of smoke reliably.</p></div>
-      </li>
-      <li class="entry">
-        <time>T+01:30</time>
-        <div class="say"><span class="who">Engineer Nour</span><p class="line">“I can smell something hot, and the detector is quiet.”</p></div>
-        <div class="why"><span class="stamp">SAME</span><p>In low gravity smoke doesn't climb to the ceiling, so ISS detectors sit inside the ventilation ducts where air is pulled through. The crew's own senses are still part of detection.</p></div>
-      </li>
-      <li class="entry hot">
-        <time>T+02:10</time>
-        <div class="say"><span class="who">Engineer Nour</span><p class="line">“There's a flame on the fabric sleeve. Small, rounded, almost blue. I can barely see it.”</p></div>
-        <div class="why"><span class="stamp">ACME · FLEX</span><p>With little buoyancy, less soot forms, and glowing soot is what makes Earth flames yellow. Low-gravity flames are dimmer and bluer, which makes them easier to miss.</p></div>
-      </li>
-      <li class="entry hot">
-        <time>T+02:40</time>
-        <div class="say"><span class="who">Commander Youssef</span><p class="line">“That sleeve passed its flammability test on Earth. Why is it spreading?”</p></div>
-        <div class="why"><span class="stamp red">BASS-II · Saffire</span><p>In BASS-II flames survived at 17% O₂ in microgravity while the same material needed 18% on Earth, and sometimes spread faster. Saffire showed Earth test results don't always carry over to a spacecraft.</p></div>
-      </li>
-      <li class="entry hot">
-        <time>T+03:00</time>
-        <div class="say"><span class="who">Commander Youssef</span><p class="line">“Kill the cabin fans. Now.”</p></div>
-        <div class="why"><span class="stamp">BASS</span><p>Across 115 burns on the ISS, switching the airflow off put flames out quickly. Faster air made flames spread faster, and near 1 cm/s they starved.</p></div>
-      </li>
-      <li class="entry">
-        <time>T+03:25</time>
-        <div class="say"><span class="who">Nour / Commander Youssef</span><p class="line">“Flame's gone.” “It isn't out until the sensors say so.”</p></div>
-        <div class="why"><span class="stamp">FLEX</span><p>FLEX discovered “cool flames”: after the visible flame died, fuel kept burning unseen at about 400–1,000 °F, making carbon monoxide and formaldehyde.</p></div>
-      </li>
-      <li class="entry hot">
-        <time>T+04:00</time>
-        <div class="say"><span class="who">Station system</span><p class="line sys">CO rising at panel C-4. Crew on masks. Extinguisher into the panel.</p></div>
-        <div class="why"><span class="stamp red">Mir 1997</span><p>In February 1997 an oxygen generator caught fire on Mir with six people aboard. It burned for about 14 minutes and the crew used three extinguishers.</p></div>
-      </li>
-      <li class="entry">
-        <time>T+45:00</time>
-        <div class="say"><span class="who">Station system</span><p class="line sys">Air scrubbed. Smoke cleared. Incident closed.</p></div>
-        <div class="why"><span class="stamp red">Mir 1997</span><p>On Mir, thick smoke hung in the station for about 45 minutes. What that crew learned went into how the ISS was designed and run.</p></div>
-      </li>
-    </ol>
+    <div class="scene">
+      <div class="cast-h"><p>In order of appearance</p><h2>The witnesses</h2></div>
+      <div class="specimens" id="specimens"></div>
+    </div>
 
-    <div class="rules">
-      <div><b>1</b><h3>Stop the air</h3><p>In microgravity the fans are the flame's lungs. Turning them off comes first.</p></div>
-      <div><b>2</b><h3>Don't trust the dark</h3><p>No visible flame doesn't mean no fire. Measure CO and gases before calling it out.</p></div>
-      <div><b>3</b><h3>Test where it will fly</h3><p>Earth tests can understate risk. Materials need testing at realistic gravity, oxygen and size.</p></div>
+    <div class="scene">
+      <div class="cast-h"><p>Final act</p><h2>Your call, Commander</h2></div>
+      <div class="drill drift" id="drill" aria-live="polite"></div>
+    </div>
+
+    <div class="scene">
+      <div class="cast-h"><p>Epilogue</p><h2>Three lines to remember</h2></div>
+      <div class="epilogue">
+        <div class="drift"><b>I</b><h3>Stop the air</h3><p>In orbit the fans are the flame's lungs. Turn them off first.</p></div>
+        <div class="drift"><b>II</b><h3>Don't trust the dark</h3><p>No visible flame doesn't mean no fire. Measure CO before you call it out.</p></div>
+        <div class="drift"><b>III</b><h3>Test where it will fly</h3><p>Earth tests can understate risk. Test at real gravity, oxygen and size.</p></div>
+      </div>
     </div>
   </section>
-
-  <!-- DRILL -->
-  <section class="block" id="drill">
-    <div class="sec-head">
-      <p class="label">The drill · four decisions</p>
-      <h2>Your call, Commander</h2>
-      <p class="sub">Same fire, but this time you decide. Every answer reveals the experiment that judges it.</p>
-    </div>
-    <div class="drill">
-      <div class="card" id="qCard"></div>
-      <aside class="card side" id="scoreCard"></aside>
-    </div>
-  </section>
-
-  <!-- LOCKER -->
-  <section class="block" id="locker">
-    <div class="sec-head">
-      <p class="label">Evidence locker · seven files</p>
-      <h2>The evidence behind every line</h2>
-      <p class="sub">Each file sums up one experiment or incident: what burned, under which conditions, what NASA learned, and what it means for a Moon base.</p>
-    </div>
-    <div class="tabs" role="tablist" id="tabs" aria-label="Evidence files"></div>
-    <div class="folder" role="tabpanel" id="folder" tabindex="0"></div>
-  </section>
-
-  <!-- OXYGEN -->
-  <section class="block" id="oxygen">
-    <div class="sec-head">
-      <p class="label">The oxygen ladder</p>
-      <h2>The higher we go, the richer the air</h2>
-      <p class="sub">Oxygen share of the breathing gas, drawn on one scale from 0 to 100%.</p>
-    </div>
-    <div class="ladder">
-      <div class="rung"><div class="nm"><b>Earth, sea level</b><span>14.7 psi</span></div><div class="track"><div class="fill" style="--v:21%;--c:var(--muted)"></div></div><em>21%</em></div>
-      <div class="rung"><div class="nm"><b>Moon habitat / rover</b><span>≤ 10.2 psi</span></div><div class="track"><div class="fill" style="--v:30%;--c:var(--cool)"></div></div><em>30%+</em></div>
-      <div class="rung"><div class="nm"><b>CFI-G test in orbit</b><span>highest tested</span></div><div class="track"><div class="fill" style="--v:85%;--c:var(--hazard)"></div></div><em>85%</em></div>
-      <div class="rung"><div class="nm"><b>Spacesuit</b><span>≈ 4.3 psi</span></div><div class="track"><div class="fill" style="--v:100%;--c:var(--ink)"></div></div><em>≈100%</em></div>
-    </div>
-    <p class="ladder-note">Sources: Space Apps 2026 challenge brief; NASA ACME / CFI-G. In 1967 the Apollo 1 capsule held pure oxygen during a ground test, and fire spread through it in seconds.</p>
-  </section>
-
-  <!-- EARTH -->
-  <section class="block" id="earth">
-    <div class="sec-head">
-      <p class="label">Back on Earth</p>
-      <h2>What orbit teaches, homes keep</h2>
-    </div>
-    <div class="earth">
-      <div><span class="label">Suppression</span><h3>Water-mist extinguishers</h3><p>Fine mist puts out fires with far less water. Knowing how flames die without gravity helps tune it.</p></div>
-      <div><span class="label">Detection</span><h3>Sharper smoke detectors</h3><p>SAME showed smoke particles are tiny and some detectors miss them. That matters for early warning in buildings too.</p></div>
-      <div><span class="label">Protection</span><h3>Firefighter gear</h3><p>Flame-resistant fabrics like Nomex were burned in space, which shows how protective materials hold up.</p></div>
-      <div><span class="label">Energy</span><h3>Cleaner engines</h3><p>The cool flames found in FLEX could help design engines that burn fuel more cleanly.</p></div>
-    </div>
-  </section>
-
-  <footer>
-    <p class="label">Open sources</p>
-    <ul class="src-list" id="srcList"></ul>
-    <p class="colophon">Team Galaxy Exploration · NASA Space Apps Challenge 2026 · Port Said. Data from NASA PSI and NTRS. A student project, not an official NASA website. The combustion chamber is a simplified teaching model, not an engineering tool.</p>
-  </footer>
 </main>
+
+<!-- ================= END CREDITS ================= -->
+<section class="credits realm" data-g="0" data-bg="#000000" data-o2="21" data-chapter="End credits">
+  <p class="fin">Fin</p>
+  <div class="role"><h4>Starring</h4><p>The Flame <i>as itself</i></p></div>
+  <div class="role"><h4>With</h4><p>Engineer Nour · Commander Youssef <i>(fictional crew)</i></p></div>
+  <div class="role"><h4>Real-world events</h4><p>Apollo 1, 1967 · Mir, 1997</p></div>
+  <div class="role"><h4>Science by</h4><p>BASS · BASS-II · Saffire I–VI · FLEX · SAME · ACME / CFI-G</p></div>
+  <div class="role"><h4>Sources</h4><ul id="srcs"></ul></div>
+  <div class="role"><h4>Made by</h4><p>Team Galaxy Exploration · Port Said<br>NASA Space Apps Challenge 2026 · Challenge: Flame in Freefall</p></div>
+  <p class="disclaimer">A student project, not an official NASA website. Data from NASA PSI and NTRS. The flame is a simplified teaching model, not an engineering tool.</p>
+  <p class="presents">Stay for the post-credits scene</p>
+</section>
+
+<!-- ================= POST-CREDITS LAB ================= -->
+<section class="lab-scene realm" data-g="0" data-bg="#060812" data-o2="21" data-chapter="Post-credits · The lab" id="lab">
+  <div class="vo">
+    <p class="lbl">Post-credits scene</p>
+    <h2>Your hand on the <span class="s">gravity.</span></h2>
+    <p class="m">While this panel is on screen, the flame is yours. Pick a world, feed it oxygen, then cut the fans and see what's left.</p>
+  </div>
+  <div class="lab">
+    <div class="ctl">
+      <div class="ctl-top"><span>Gravity</span><output id="gOut">0.00 g</output></div>
+      <div class="chips">
+        <button class="chip" type="button" data-g="1">Earth 1 g</button>
+        <button class="chip" type="button" data-g="0.38">Mars 0.38 g</button>
+        <button class="chip" type="button" data-g="0.17">Moon 0.17 g</button>
+        <button class="chip" type="button" data-g="0">Orbit 0 g</button>
+      </div>
+      <input type="range" id="gIn" min="0" max="1" step="0.01" value="0" aria-label="Gravity">
+    </div>
+    <div class="ctl">
+      <div class="ctl-top"><span>Oxygen in the air</span><output id="oOut">21%</output></div>
+      <input type="range" id="oIn" min="15" max="40" step="1" value="21" aria-label="Oxygen percent">
+    </div>
+    <div class="ctl">
+      <div class="ctl-top"><span>Fan airflow</span><output id="fOut">8 cm/s</output></div>
+      <input type="range" id="fIn" min="0" max="20" step="0.5" value="8" aria-label="Fan airflow">
+    </div>
+    <div class="chips"><button class="chip kill" type="button" id="kill">Kill the fans</button><button class="chip" type="button" id="relight" hidden>Re-ignite</button></div>
+    <div class="readout"><div>Shape<b id="shape">Sphere</b></div><div id="stateBox" style="text-align:right">State<b id="state">Burning</b></div></div>
+    <p class="note" id="note"></p>
+  </div>
+</section>
 
 <script>
 (() => {
-/* ================= data ================= */
 const S = {
   bass:{l:"NASA NTRS – BASS results",u:"https://ntrs.nasa.gov/api/citations/20140011099/downloads/20140011099.pdf"},
   bass2:{l:"NASA NTRS – BASS-II results",u:"https://ntrs.nasa.gov/api/citations/20160000593/downloads/20160000593.pdf"},
@@ -433,356 +436,218 @@ const S = {
   mir:{l:"NASA – 25 years ago: fire aboard Mir",u:"https://www.nasa.gov/feature/25-years-ago-fire-aboard-space-station-mir"},
   challenge:{l:"Space Apps 2026 – Flame in Freefall challenge",u:"https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/"}
 };
-
-const FILES = [
-  {id:"bass",name:"BASS",color:"var(--hazard)",rel:5,
-    full:{en:"Burning and Suppression of Solids · ISS"},
-    where:{en:"Microgravity Science Glovebox, fan-driven flow duct"},
-    fuel:{en:"41 solid samples, 115 burns"},
-    o2:{en:"Station air; nitrogen added in some tests"},
-    flow:{en:"Slow fan flow; flames quenched near 1 cm/s"},
-    finding:{en:"Switching the airflow off put the flames out quickly. Faster airflow made flames spread faster, and very slow flow starved them. Adding nitrogen didn't put one flame out; it actually looked brighter."},
-    moon:{en:"The best first move in a space fire is to stop the fans. Ventilation design is a fire-safety decision."},
-    src:[S.bass]},
-  {id:"bass2",name:"BASS-II",color:"var(--hazard)",rel:5,
-    full:{en:"Burning and Suppression of Solids II · ISS"},
-    where:{en:"Microgravity Science Glovebox, flow duct"},
-    fuel:{en:"Solid fuel samples"},
-    o2:{en:"16 – 21%"},
-    flow:{en:"0.4 – 4 cm/s"},
-    finding:{en:"In opposed-flow tests, flames in microgravity sometimes spread faster than on Earth and kept burning at just 17% oxygen. On Earth the same material needed 18%."},
-    moon:{en:"Earth fire tests can underestimate how easily a material burns in low gravity."},
-    src:[S.bass2,S.bass2s]},
-  {id:"saffire",name:"Saffire",color:"var(--hazard)",rel:5,
-    full:{en:"Spacecraft Fire Safety Experiment I–VI · 2016–2024"},
-    where:{en:"Uncrewed Cygnus cargo ships after leaving the ISS"},
-    fuel:{en:"Cotton-fiberglass sheet 0.4 × 1 m; Nomex; acrylic (PMMA)"},
-    o2:{en:"Spacecraft cabin atmosphere"},
-    flow:{en:"Fan-driven flow through the test unit"},
-    finding:{en:"Saffire-I (14 June 2016) was the largest fire ever lit on purpose in space. Before it, the biggest was about the size of an index card. Sample size changed the results."},
-    moon:{en:"Full-scale testing matters. Materials that pass Earth tests may behave differently in a spacecraft."},
-    src:[S.saffire]},
-  {id:"flex",name:"FLEX",color:"var(--cool)",rel:4,
-    full:{en:"Flame Extinguishment Experiments · ISS since 2009"},
-    where:{en:"Combustion Integrated Rack, droplet apparatus (MDCA)"},
-    fuel:{en:"Single liquid fuel droplets"},
-    o2:{en:"Varied test atmospheres"},
-    flow:{en:"Still air"},
-    finding:{en:"Droplets burned as glowing balls at about 2,200–3,100 °F. After the visible flame went out, the fuel kept burning invisibly as a cool flame at about 400–1,000 °F, making carbon monoxide and formaldehyde."},
-    moon:{en:"A fire isn't out just because you can't see it. Procedures must check for invisible burning and toxic gas."},
-    src:[S.flex]},
-  {id:"same",name:"SAME",color:"var(--ok)",rel:4,
-    full:{en:"Smoke Aerosol Measurement Experiment · ISS 2007 & 2011"},
-    where:{en:"ISS: materials heated, smoke measured"},
-    fuel:{en:"Teflon, Kapton, cellulose, silicone (heated, not burned)"},
-    o2:{en:"Station air"},
-    flow:{en:"Smoke drawn past detectors"},
-    finding:{en:"Much of the smoke was under 500 nanometres. Neither the ionization nor the photoelectric detector caught every kind of smoke reliably."},
-    moon:{en:"Habitat detectors must be tested against real spacecraft smoke, and placed where the air moves."},
-    src:[S.same]},
-  {id:"acme",name:"ACME",color:"var(--cool)",rel:4,
-    full:{en:"Advanced Combustion via Microgravity Experiments · ISS from 2017"},
-    where:{en:"Combustion Integrated Rack"},
-    fuel:{en:"Gaseous fuels, six investigations"},
-    o2:{en:"Up to 85% (CFI-G)"},
-    flow:{en:"Mostly still air"},
-    finding:{en:"Six gas-flame studies of structure, soot and extinction produced steady spherical flames. CFI-G ran the highest-oxygen microgravity tests yet, up to 85%."},
-    moon:{en:"High-oxygen data feeds models that predict fires in oxygen-rich habitats and near spacesuit systems."},
-    src:[S.acme,S.flames]},
-  {id:"mir",name:"Mir 1997",color:"var(--hazard)",rel:4,
-    full:{en:"Fire aboard space station Mir · February 1997"},
-    where:{en:"Kvant-1 module, Mir"},
-    fuel:{en:"Solid-fuel oxygen generator"},
-    o2:{en:"Oxygen-generator fire"},
-    flow:{en:"—"},
-    finding:{en:"An oxygen generator caught fire with six people aboard. It burned for about 14 minutes, the crew used three extinguishers, and thick smoke filled the station for around 45 minutes."},
-    moon:{en:"Real fires happen. What the Mir crew learned was built into the ISS."},
-    src:[S.mir]}
-];
-
-const QS = [
-  {q:{en:"The module smells of hot plastic. The smoke detector is silent. What do you do?"},
-   o:[
-    {t:{en:"Trust the detector and keep working."},ok:false},
-    {t:{en:"Investigate now and check the duct sensors and CO readings."},ok:true},
-    {t:{en:"Turn the fans up to clear the smell."},ok:false}],
-   why:{en:"SAME found that much spacecraft smoke is under 500 nm and that neither standard detector type caught all of it. A quiet detector is not proof. Turning fans up feeds a hidden fire (BASS)."},tag:"SAME · BASS"},
-  {q:{en:"A small blue flame appears on a fabric sleeve. First move?"},
-   o:[
-    {t:{en:"Fans to maximum to blow it out."},ok:false},
-    {t:{en:"Flood the area with nitrogen and leave the fans on."},ok:false},
-    {t:{en:"Shut down forced ventilation."},ok:true}],
-   why:{en:"In BASS, switching the airflow off put flames out quickly, while faster air made them spread faster. Adding nitrogen didn't put one flame out; it looked brighter."},tag:"BASS"},
-  {q:{en:"The flame vanishes. The cabin looks normal."},
-   o:[
-    {t:{en:"Keep masks on and watch CO and formaldehyde until they drop."},ok:true},
-    {t:{en:"Declare the fire out and restart the fans."},ok:false}],
-   why:{en:"FLEX showed fuel can keep burning invisibly as a cool flame, producing carbon monoxide and formaldehyde. Gas readings decide when it's over."},tag:"FLEX"},
-  {q:{en:"A supplier offers a cabin fabric that passed every Earth flammability test."},
-   o:[
-    {t:{en:"Approve it. It passed."},ok:false},
-    {t:{en:"Require tests at low gravity, 30%+ oxygen and realistic size."},ok:true}],
-   why:{en:"BASS-II saw flames survive at 17% O₂ in orbit versus 18% on Earth. Saffire showed results change with scale. Earth passes can hide space risk."},tag:"BASS-II · Saffire"}
-];
-
-const UI = {
-  en:{q:"Decision",of:"of",right:"Correct call",wrong:"Not this time",next:"Next decision",finish:"See your rating",again:"Run the drill again",score:"Your score",
-      r:["Back to training. Re-read the log and try again.","You'd slow this fire down. One more drill.","Solid command. One habit left to learn.","Flight-ready. You'd run this fire like a veteran."],
-      pick:"Choose an answer to see the evidence.",
-      shape:["Tall teardrop","Short teardrop","Low dome","Sphere"],
-      st:{burn:"Burning",weak:"Starving",out:"Out"},
-      reig:"Re-ignite",
-      notes:{
-        earth:["Earth · buoyancy","Hot gas rises and pulls fresh air in from below. Glowing soot turns the flame yellow."],
-        mars:["Mars · weak buoyancy","At about a third of Earth's gravity the plume rises slowly, so the flame is shorter and wider."],
-        moon:["Moon · one-sixth g","Buoyancy is weak and the fans matter more. PSI has no lunar-gravity flame data yet; LUCI and FM2 aim to fill that gap."],
-        orbit:["ISS · ACME","No buoyancy: oxygen only arrives by diffusion and fan flow. Less soot forms, so the flame is a dim blue ball."],
-        quench:["BASS · fans off","With no buoyancy and no fan flow, nothing brings oxygen. On the ISS flames starved near 1 cm/s. Then the risk is a cool flame you can't see (FLEX)."],
-        lowo2:["BASS-II · oxygen limit","Below the limit. In orbit a flame survived at 17% O₂; on Earth the same material needed 18%."],
-        rich:" At 30%+ O₂, the planned Moon-habitat air, flames grow bigger and spread faster."
-      }}
-};
-
-const root = document.documentElement;
-const lang = "en";
-const T = o => (o && typeof o === "object" && "en" in o) ? o[lang] : o;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-/* ================= drill ================= */
-let qi = 0, answers = [], picked = null;
-const qCard = document.getElementById("qCard"), scoreCard = document.getElementById("scoreCard");
-function dots(){
-  return '<div class="dots" aria-hidden="true">' + QS.map((_,i)=>{
-    const a = answers[i]; return `<i class="${a===true?"right":a===false?"wrong":i===qi?"now":""}"></i>`;
-  }).join("") + "</div>";
-}
-function renderQ(){
-  const u = UI[lang];
+const SPEC = [
+  {n:"BASS",m:"ISS · 41 samples, 115 burns",f:"Switching the airflow off put flames out quickly. Faster air made them spread faster; very slow flow starved them. Adding nitrogen didn't put one flame out. It looked brighter.",l:"Stop the fans first. Ventilation design is a fire-safety decision.",s:[S.bass]},
+  {n:"BASS-II",m:"ISS · O₂ 16–21% · 0.4–4 cm/s",f:"Flames in microgravity sometimes spread faster than on Earth and kept burning at 17% oxygen. On Earth the same material needed 18%.",l:"Earth fire tests can underestimate how easily a material burns in low gravity.",s:[S.bass2,S.bass2s]},
+  {n:"Saffire",m:"Uncrewed Cygnus · 2016–2024",f:"Saffire-I, on 14 June 2016, was the largest fire ever lit on purpose in space: a cotton-fiberglass sheet 0.4 × 1 m. Before it, the biggest was about index-card size. Results changed with sample size.",l:"Test at full scale. Small samples are not enough.",s:[S.saffire]},
+  {n:"FLEX",m:"ISS · since 2009 · fuel droplets",f:"Droplets burned as glowing balls at 2,200–3,100 °F. After the visible flame died, the fuel kept burning invisibly as a cool flame at 400–1,000 °F, making carbon monoxide and formaldehyde.",l:"A fire isn't out because you can't see it. Check the gases.",s:[S.flex]},
+  {n:"SAME",m:"ISS · 2007 & 2011 · heated materials",f:"Much of the smoke from overheated Teflon, Kapton, cellulose and silicone was under 500 nm. Neither standard detector type caught every kind reliably.",l:"Test detectors on real spacecraft smoke, and place them where the air moves.",s:[S.same]},
+  {n:"ACME",m:"ISS · from 2017 · gas flames",f:"Six studies of flame structure, soot and extinction produced steady spherical flames. Its CFI-G study ran the highest-oxygen microgravity tests yet, up to 85%.",l:"High-oxygen data feeds models for oxygen-rich habitats and suit systems.",s:[S.acme,S.flames]},
+  {n:"Mir, 1997",m:"Kvant-1 module · six aboard",f:"A solid-fuel oxygen generator caught fire and burned for about 14 minutes. The crew used three extinguishers, and thick smoke filled the station for around 45 minutes.",l:"Real fires happen. Mir's lessons were built into the ISS.",s:[S.mir],wide:true}
+];
+document.getElementById("specimens").innerHTML = SPEC.map(x => `<article class="spec drift${x.wide?" wide":""}">
+  <div class="spec-top"><h3>${esc(x.n)}</h3><span>${esc(x.m)}</span></div>
+  <p>${esc(x.f)}</p>
+  <p class="lesson"><strong>FOR A MOON BASE</strong>${esc(x.l)}</p>
+  <p class="src">${x.s.map(s=>`<a href="${s.u}" target="_blank" rel="noopener">${esc(s.l)} ↗</a>`).join("<br>")}</p>
+</article>`).join("");
+document.getElementById("srcs").innerHTML = Object.values(S).map(s=>`<li><a href="${s.u}" target="_blank" rel="noopener">${esc(s.l)} ↗</a></li>`).join("");
+
+const forget = document.getElementById("forget");
+forget.innerHTML = forget.textContent.split("").map(ch => ch === " " ? " " : `<span aria-hidden="true">${esc(ch)}</span>`).join("");
+const letters = [...forget.querySelectorAll("span")].map((el,i)=>({el, s:i*1.7+Math.random()*3, a:0.6+Math.random()*0.8}));
+
+/* ---------- drill ---------- */
+const QS = [
+  {q:"The module smells of hot plastic. The smoke detector is silent.",o:[["Trust the detector and keep working.",0],["Investigate now. Check the duct sensors and CO.",1],["Turn the fans up to clear the smell.",0]],w:"SAME found much spacecraft smoke is under 500 nm and neither standard detector caught all of it. Fans on high feed a hidden fire (BASS).",t:"SAME · BASS"},
+  {q:"A small blue flame appears on a fabric sleeve. First move?",o:[["Fans to maximum to blow it out.",0],["Flood it with nitrogen, fans still on.",0],["Shut down forced ventilation.",1]],w:"In BASS, cutting the airflow put flames out quickly, while faster air spread them. Nitrogen didn't put one flame out; it looked brighter.",t:"BASS"},
+  {q:"The flame vanishes. The cabin looks normal.",o:[["Masks stay on. Watch CO and formaldehyde until they drop.",1],["Declare it out and restart the fans.",0]],w:"FLEX showed fuel can keep burning invisibly as a cool flame, making carbon monoxide and formaldehyde. Gas readings decide when it's over.",t:"FLEX"},
+  {q:"A supplier offers a cabin fabric that passed every Earth fire test.",o:[["Approve it. It passed.",0],["Require tests at low gravity, 30%+ oxygen and real size.",1]],w:"BASS-II saw flames survive at 17% O₂ in orbit versus 18% on Earth, and Saffire showed results change with scale.",t:"BASS-II · SAFFIRE"}
+];
+const RATE = ["Back to training. Rewind to Chapter III and watch again.","You'd slow this fire down. One more take.","Solid command. One habit left to learn.","Flight-ready. You'd run this fire like a veteran."];
+let qi = 0, ans = [], pick = null;
+const drill = document.getElementById("drill");
+const pips = () => `<div class="pips" aria-hidden="true">${QS.map((_,i)=>`<i class="${ans[i]===1?"right":ans[i]===0?"wrong":i===qi?"now":""}"></i>`).join("")}</div>`;
+function renderDrill(){
   if (qi >= QS.length){
-    const s = answers.filter(Boolean).length;
-    qCard.innerHTML = `<div class="q-meta"><span class="label">${u.score}</span>${dots()}</div>
-      <p class="q">${esc(u.r[Math.min(3, Math.max(0, s-1))])}</p>
-      <button class="btn" type="button" id="again">${u.again}</button>`;
-    document.getElementById("again").onclick = () => { qi = 0; answers = []; picked = null; renderQ(); renderScore(); };
+    const s = ans.filter(x=>x===1).length;
+    drill.innerHTML = `<div class="d-meta"><span class="lbl">Final act · result</span>${pips()}</div>
+      <div class="score-big">${s}<small>/${QS.length}</small></div><p class="q">${esc(RATE[Math.max(0,s-1)])}</p>
+      <button class="btn" type="button" id="again">Take it from the top</button>`;
+    document.getElementById("again").onclick = () => { qi=0; ans=[]; pick=null; renderDrill(); };
     return;
   }
   const q = QS[qi];
-  qCard.innerHTML = `<div class="q-meta"><span class="label">${u.q} ${qi+1} ${u.of} ${QS.length}</span>${dots()}</div>
-    <p class="q">${esc(T(q.q))}</p>
-    <div class="opts">${q.o.map((o,i)=>{
-      let cls = "";
-      if (picked !== null){ if (o.ok) cls = "right"; else if (i === picked) cls = "wrong"; }
-      return `<button class="opt ${cls}" type="button" data-i="${i}" ${picked!==null?"disabled":""}><span class="k">${String.fromCharCode(65+i)}</span><span>${esc(T(o.t))}</span></button>`;
-    }).join("")}</div>
-    ${picked !== null ? `<div class="verdict">
-      <span class="tag" style="color:${q.o[picked].ok?"var(--ok)":"var(--hazard)"}">${q.o[picked].ok?u.right:u.wrong} · ${q.tag}</span>
-      <p>${esc(T(q.why))}</p>
-      <button class="btn" type="button" id="nextQ">${qi === QS.length-1 ? u.finish : u.next}</button></div>` : ""}`;
-  qCard.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-    picked = +b.dataset.i; answers[qi] = q.o[picked].ok; renderQ(); renderScore();
-    const v = qCard.querySelector(".verdict"); v && v.querySelector("button").focus({preventScroll:true});
-  });
-  const n = document.getElementById("nextQ");
-  if (n) n.onclick = () => { qi++; picked = null; renderQ(); renderScore(); };
+  drill.innerHTML = `<div class="d-meta"><span class="lbl">Decision ${qi+1} of ${QS.length}</span>${pips()}</div>
+    <p class="q">${esc(q.q)}</p>
+    <div class="opts">${q.o.map((o,i)=>`<button class="opt ${pick===null?"":o[1]?"right":i===pick?"wrong":""}" type="button" data-i="${i}" ${pick!==null?"disabled":""}><span class="k">${"ABC"[i]}</span><span>${esc(o[0])}</span></button>`).join("")}</div>
+    ${pick!==null?`<div class="verdict"><span class="tag" style="color:${q.o[pick][1]?"var(--ok)":"var(--ember)"}">${q.o[pick][1]?"Correct call":"Not this time"} · ${q.t}</span><p>${esc(q.w)}</p><button class="btn" type="button" id="next">${qi===QS.length-1?"See your rating":"Next decision"}</button></div>`:""}`;
+  drill.querySelectorAll(".opt").forEach(b => b.onclick = () => { pick=+b.dataset.i; ans[qi]=q.o[pick][1]; renderDrill(); document.getElementById("next").focus({preventScroll:true}); });
+  const n = document.getElementById("next"); if (n) n.onclick = () => { qi++; pick=null; renderDrill(); };
 }
-function renderScore(){
-  const u = UI[lang], s = answers.filter(Boolean).length;
-  scoreCard.innerHTML = `<span class="label">${u.score}</span>
-    <div class="big">${s}<small>/${QS.length}</small></div>
-    <p>${answers.length ? esc(u.r[Math.min(3, Math.max(0, s-1))]) : esc(u.pick)}</p>`;
-}
+renderDrill();
 
-/* ================= locker ================= */
-let fileIdx = 0;
-const tabs = document.getElementById("tabs"), folder = document.getElementById("folder");
-FILES.forEach((f,i) => {
-  const b = document.createElement("button");
-  b.className = "tab"; b.type = "button"; b.role = "tab"; b.id = "tab-" + f.id;
-  b.innerHTML = `<span class="sw" style="background:${f.color}"></span>${f.name}`;
-  b.onclick = () => { fileIdx = i; renderFolder(); };
-  b.onkeydown = e => {
-    const d = (e.key === "ArrowRight") ? 1 : (e.key === "ArrowLeft") ? -1 : 0;
-    if (!d) return; e.preventDefault();
-    fileIdx = (fileIdx + d + FILES.length) % FILES.length; renderFolder(); tabs.children[fileIdx].focus();
-  };
-  tabs.appendChild(b);
-});
-function renderFolder(){
-  const f = FILES[fileIdx];
-  [...tabs.children].forEach((t,i)=>{ t.setAttribute("aria-selected", i===fileIdx); t.tabIndex = i===fileIdx?0:-1; });
-  folder.setAttribute("aria-labelledby", "tab-" + f.id);
-  const L = {w:"Where",f:"Fuel",o:"Oxygen",a:"Airflow",r:"Moon relevance",m:"Lesson for a Moon base",s:"Sources"};
-  folder.innerHTML = `<div style="min-width:0">
-      <h3>${f.name}</h3><p class="full">${esc(T(f.full))}</p>
-      <p class="finding">${esc(T(f.finding))}</p>
-      <div class="lesson"><span class="label">${L.m}</span><p>${esc(T(f.moon))}</p></div>
-    </div>
-    <div style="min-width:0">
-      <dl class="spec">
-        <div><dt>${L.w}</dt><dd>${esc(T(f.where))}</dd></div>
-        <div><dt>${L.f}</dt><dd>${esc(T(f.fuel))}</dd></div>
-        <div><dt>${L.o}</dt><dd>${esc(T(f.o2))}</dd></div>
-        <div><dt>${L.a}</dt><dd>${esc(T(f.flow))}</dd></div>
-        <div><dt>${L.r}</dt><dd><span class="rel" aria-label="${f.rel} / 5">${[1,2,3,4,5].map(n=>`<i class="${n<=f.rel?"on":""}"></i>`).join("")}</span></dd></div>
-      </dl>
-      <div class="srcs"><span class="label">${L.s}</span>${f.src.map(s=>`<a href="${s.u}" target="_blank" rel="noopener">${esc(s.l)} ↗</a>`).join("")}</div>
-    </div>`;
-}
-
-/* sources footer */
-document.getElementById("srcList").innerHTML = Object.values(S).map(s=>`<li><a href="${s.u}" target="_blank" rel="noopener">${esc(s.l)} ↗</a></li>`).join("");
-
-/* ================= flame chamber ================= */
-const cv = document.getElementById("flame"), ctx = cv.getContext("2d");
-const gIn = document.getElementById("g"), oIn = document.getElementById("o2"), fIn = document.getElementById("flow");
-const gOut = document.getElementById("gOut"), oOut = document.getElementById("oOut"), fOut = document.getElementById("fOut");
-const hudShape = document.getElementById("hudShape"), hudState = document.getElementById("hudState"), hudBox = document.getElementById("hudStateBox");
-const note = document.getElementById("note"), reig = document.getElementById("reignite");
-let W = 0, H = 0, DPR = 1;
-function resize(){
-  const r = cv.getBoundingClientRect(); DPR = Math.min(2, window.devicePixelRatio || 1);
-  W = r.width; H = r.height; cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
-}
-resize(); window.addEventListener("resize", resize);
-
-/* sprite palette from blue (cool, sootless) to orange (sooty) */
-const SPR = [];
-(function(){
-  const cols = [];
-  for (let i=0;i<24;i++){
-    const t = i/23; // 0 blue -> 1 orange-yellow
-    const c0 = [70,140,255], c1 = [255,176,64];
-    cols.push(c0.map((v,k)=>Math.round(v+(c1[k]-v)*t)));
+/* ---------- scroll -> gravity, sky, chapter, timecode ---------- */
+const realms = [...document.querySelectorAll(".realm")];
+const hex = h => [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const stops = realms.map(r => ({el:r, g:+r.dataset.g, bg:hex(r.dataset.bg), o2:+r.dataset.o2, ch:r.dataset.chapter}));
+const opening = document.querySelector(".opening");
+let scrollG = 1, scrollO2 = 21;
+const hudCh = document.getElementById("hudChapter"), tc = document.getElementById("tc");
+const top = el => el.getBoundingClientRect().top + scrollY;
+function onScroll(){
+  const mid = scrollY + innerHeight*0.5;
+  let i = -1;
+  for (let k=0;k<stops.length;k++) if (top(stops[k].el) <= mid) i = k;
+  if (i < 0){ scrollG = 1; scrollO2 = 21; hudCh.textContent = opening.dataset.chapter; document.documentElement.style.setProperty("--bg", "#13223C"); }
+  else {
+    const a = stops[i], b = stops[Math.min(i+1, stops.length-1)];
+    const start = top(a.el), end = b === a ? start + 1 : top(b.el);
+    let t = b === a ? 0 : Math.min(1, Math.max(0, (mid - start)/(end - start)));
+    t = Math.min(1, Math.max(0, (t - 0.65)/0.35)); t = t*t*(3-2*t);
+    scrollG = a.g + (b.g - a.g)*t; scrollO2 = a.o2 + (b.o2 - a.o2)*t;
+    const c = a.bg.map((v,k)=>Math.round(v + (b.bg[k]-v)*t));
+    document.documentElement.style.setProperty("--bg", `rgb(${c[0]},${c[1]},${c[2]})`);
+    hudCh.textContent = a.ch;
   }
-  cols.forEach(c=>{
-    const s = document.createElement("canvas"); s.width = s.height = 64;
-    const x = s.getContext("2d"), g = x.createRadialGradient(32,32,0,32,32,32);
-    g.addColorStop(0,`rgba(${Math.min(255,c[0]+60)},${Math.min(255,c[1]+60)},${Math.min(255,c[2]+60)},1)`);
-    g.addColorStop(.35,`rgba(${c[0]},${c[1]},${c[2]},.55)`);
-    g.addColorStop(1,`rgba(${c[0]},${c[1]},${c[2]},0)`);
-    x.fillStyle = g; x.fillRect(0,0,64,64); SPR.push(s);
-  });
-})();
+  // a 24 fps timecode that runs with the reel
+  const total = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  const frames = Math.round(scrollY / total * 14 * 60 * 24);
+  const ff = frames % 24, ss = Math.floor(frames/24) % 60, mm = Math.floor(frames/1440) % 60;
+  tc.textContent = `00:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}:${String(ff).padStart(2,"0")}`;
+}
+addEventListener("scroll", onScroll, {passive:true}); addEventListener("resize", onScroll); onScroll();
 
-const P = []; let intensity = 1, lit = true, ghost = 0, outReason = null;
-const motes = Array.from({length:46},()=>({x:Math.random(),y:Math.random(),s:Math.random()*0.6+0.4}));
-function params(){ return {g:+gIn.value, o2:+oIn.value, flow:+fIn.value}; }
-function targetIntensity(p){
-  const limit = 18 - (1 - Math.min(1,p.g*4)); // 18% at 1 g, ~17% toward 0 g (BASS-II spirit)
-  if (p.o2 < limit) return {v:0, why:"lowo2"};
-  const supply = 12*Math.sqrt(p.g) + p.flow;            // buoyant + forced flow, cm/s-ish
-  if (supply < 1) return {v:0, why:"quench"};
-  const sf = Math.min(1, Math.sqrt((supply-1)/5));
-  const of = Math.min(1.35, 0.35 + (p.o2 - limit)/9);
-  return {v: Math.max(0, sf*of), why:null};
+/* ---------- post-credits lab ---------- */
+const gIn = document.getElementById("gIn"), oIn = document.getElementById("oIn"), fIn = document.getElementById("fIn");
+const gOut = document.getElementById("gOut"), oOut = document.getElementById("oOut"), fOut = document.getElementById("fOut");
+const shapeEl = document.getElementById("shape"), stateEl = document.getElementById("state"), stateBox = document.getElementById("stateBox");
+const note = document.getElementById("note"), relight = document.getElementById("relight");
+let labOn = false;
+new IntersectionObserver(es => es.forEach(e => labOn = e.isIntersecting), {threshold:.35}).observe(document.querySelector(".lab"));
+document.querySelectorAll(".lab [data-g]").forEach(c => c.onclick = () => { gIn.value = c.dataset.g; readout(true); });
+document.getElementById("kill").onclick = () => { fIn.value = 0; readout(true); };
+[gIn,oIn,fIn].forEach(el => el.addEventListener("input", () => readout(true)));
+relight.onclick = () => {
+  const p = {g:+gIn.value, o2:+oIn.value, flow:+fIn.value};
+  if (target(p).v === 0){ if (p.o2 < 22) oIn.value = 30; if (12*Math.sqrt(p.g)+p.flow < 3) fIn.value = 8; }
+  lit = true; intensity = .15; ghost = 0; why = null; readout(true);
+};
+const cur = () => labOn ? {g:+gIn.value, o2:+oIn.value, flow:+fIn.value} : {g:scrollG, o2:scrollO2, flow:8};
+
+const NOTES = {
+  earth:["Earth · buoyancy","Hot gas rises and pulls fresh air in from below. Glowing soot turns the flame yellow."],
+  mars:["Mars · weak buoyancy","At about a third of Earth's gravity the plume rises slowly, so the flame is shorter and wider."],
+  moon:["Moon · one-sixth g","Buoyancy is weak and the fans matter more. PSI has no lunar-gravity flame data yet."],
+  orbit:["ISS · ACME","No buoyancy. Oxygen arrives only by diffusion and fan flow. Less soot forms, so the flame is a dim blue ball."],
+  quench:["BASS · fans off","No buoyancy and no fan flow: nothing brings oxygen. On the ISS flames starved near 1 cm/s. The remaining risk is a cool flame you can't see (FLEX)."],
+  lowo2:["BASS-II · oxygen limit","Below the limit. In orbit a flame survived at 17% O₂; on Earth the same material needed 18%."]
+};
+let lastKey = "";
+function readout(force){
+  const p = {g:+gIn.value, o2:+oIn.value, flow:+fIn.value};
+  gOut.textContent = p.g.toFixed(2) + " g"; oOut.textContent = p.o2 + "%"; fOut.textContent = p.flow + " cm/s";
+  const tg = target(p), si = p.g>.6?0:p.g>.25?1:p.g>.05?2:3;
+  const st = !lit ? "Out" : (tg.v < .25 || tg.v < intensity - .08) ? "Starving" : "Burning";
+  const nk = !lit ? (why||"quench") : tg.v===0 ? tg.why : ["earth","mars","moon","orbit"][si];
+  const key = [si,st,nk,p.o2>=30].join("|"); if (!force && key===lastKey) return; lastKey = key;
+  shapeEl.textContent = lit ? ["Tall teardrop","Short teardrop","Low dome","Sphere"][si] : "—";
+  stateEl.textContent = st; stateBox.className = st==="Out" ? "out" : "";
+  note.innerHTML = `<span class="src">${NOTES[nk][0]}</span>${NOTES[nk][1]}${p.o2>=30&&lit?" At 30%+ O₂, the planned Moon-habitat air, flames grow bigger and spread faster.":""}`;
+  relight.hidden = lit;
 }
 
-let last = performance.now(), running = true, acc = 0;
-function step(now){
-  if (!running){ last = now; requestAnimationFrame(step); return; }
-  const dt = Math.min(0.05, (now-last)/1000); last = now;
-  const p = params(), tg = targetIntensity(p);
-  if (lit){
-    intensity += (tg.v - intensity) * Math.min(1, dt * (tg.v < intensity ? 1.1 : 2.2));
-    if (tg.v === 0 && intensity < 0.04){ lit = false; intensity = 0; outReason = tg.why; ghost = tg.why === "quench" ? 1 : 0; updateReadout(true); }
-  } else { ghost = Math.max(0, ghost - dt*0.08); }
+/* ---------- the flame ---------- */
+const cv = document.getElementById("flame"), ctx = cv.getContext("2d");
+let W=0,H=0,DPR=1;
+const mobile = matchMedia("(max-width:900px)"), still = matchMedia("(prefers-reduced-motion: reduce)");
+function resize(){ DPR=Math.min(2,devicePixelRatio||1); W=innerWidth; H=innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
+resize(); addEventListener("resize", resize);
+const SPR = [];
+for (let i=0;i<24;i++){
+  const t=i/23, c0=[80,150,255], c1=[255,170,60], c=c0.map((v,k)=>Math.round(v+(c1[k]-v)*t));
+  const s=document.createElement("canvas"); s.width=s.height=64; const x=s.getContext("2d"), g=x.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,`rgba(${Math.min(255,c[0]+60)},${Math.min(255,c[1]+60)},${Math.min(255,c[2]+60)},1)`);
+  g.addColorStop(.35,`rgba(${c[0]},${c[1]},${c[2]},.55)`); g.addColorStop(1,`rgba(${c[0]},${c[1]},${c[2]},0)`);
+  x.fillStyle=g; x.fillRect(0,0,64,64); SPR.push(s);
+}
+function target(p){
+  const limit = 18 - (1 - Math.min(1, p.g*4));
+  if (p.o2 < limit) return {v:0, why:"lowo2"};
+  const supply = 12*Math.sqrt(p.g) + p.flow;
+  if (supply < 1) return {v:0, why:"quench"};
+  return {v: Math.max(0, Math.min(1, Math.sqrt((supply-1)/5)) * Math.min(1.35, .35 + (p.o2-limit)/9)), why:null};
+}
+const P=[]; let intensity=1, lit=true, ghost=0, why=null, acc=0, last=performance.now(), smoothG=1;
+const stars = Array.from({length:140},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.3+.2,tw:Math.random()*6}));
+const drifters = [...document.querySelectorAll(".drift")].map((el,i)=>({el,s:i*2.31+Math.random()*4}));
+const gRead = document.getElementById("gRead"), gLine = document.getElementById("gLine");
 
-  const scale = Math.min(W, H) / 420;
-  const cx = W/2 - (p.g < .05 ? 0 : 0), cy = H*(0.42 + 0.2*p.g);
-  // emit
+function frame(now){
+  const dt = Math.min(.05,(now-last)/1000); last = now;
+  const p = cur(); smoothG += (p.g - smoothG)*Math.min(1,dt*4); p.g = Math.max(0,smoothG);
+  gRead.textContent = p.g.toFixed(2) + " g"; gLine.style.width = (p.g*100).toFixed(1) + "%";
+
+  const tg = target(p);
   if (lit){
-    acc += dt * 520 * intensity * (0.7 + 0.3*Math.min(1,p.o2/30));
-    while (acc > 1){ acc--;
-      const a = Math.random()*Math.PI*2, sp = (14 + Math.random()*16) * scale * (0.8 + 0.4*(p.o2/30));
-      const up = p.g;
-      P.push({x:cx + (Math.random()-.5)*4*scale, y:cy + (Math.random()-.5)*4*scale,
-        vx:Math.cos(a)*sp*(1.9-1.5*up), vy:Math.sin(a)*sp*(1.9-1.5*up) - 30*up*scale,
-        age:0, life:(0.75 + Math.random()*0.6) * (1 + 0.5*(1-up)) * (0.75 + 0.5*intensity),
-        r:(9 + Math.random()*9)*scale*(0.85+0.3*intensity)*(1+0.5*up)});
+    intensity += (tg.v-intensity)*Math.min(1,dt*(tg.v<intensity?1.1:2.2));
+    if (tg.v===0 && intensity<.04){ lit=false; intensity=0; why=tg.why; ghost = tg.why==="quench"?1:0; readout(true); }
+  } else ghost = Math.max(0, ghost-dt*.08);
+  if (!labOn && !lit && tg.v>0){ lit=true; intensity=.2; readout(true); }
+
+  const sc = Math.min(W,H)/440;
+  const cx = mobile.matches ? W*.5 : W*.87, cy = H*(.46 + .14*p.g);
+  if (lit){
+    acc += dt*520*intensity*(.7+.3*Math.min(1,p.o2/30));
+    while (acc>1){ acc--;
+      const a=Math.random()*Math.PI*2, sp=(14+Math.random()*16)*sc*(.8+.4*(p.o2/30)), up=p.g;
+      P.push({x:cx+(Math.random()-.5)*4*sc,y:cy+(Math.random()-.5)*4*sc,vx:Math.cos(a)*sp*(1.9-1.5*up),vy:Math.sin(a)*sp*(1.9-1.5*up)-30*up*sc,
+        age:0,life:(.75+Math.random()*.6)*(1+.5*(1-up))*(.75+.5*intensity),r:(9+Math.random()*9)*sc*(.85+.3*intensity)*(1+.5*up)});
     }
   }
-  // update
-  const B = 300*scale*p.g, F = p.flow*2.4*scale;
-  for (let i=P.length-1;i>=0;i--){
-    const q = P[i]; q.age += dt; if (q.age > q.life){ P.splice(i,1); continue; }
-    q.vy -= B*dt; q.vx += (F - q.vx*0.0)*dt*0.9;
-    q.vx *= (1 - 1.4*dt); q.vy *= (1 - 1.4*dt*(1-0.5*p.g));
-    q.vx += (Math.random()-.5)*20*scale*dt; q.vy += (Math.random()-.5)*20*scale*dt;
-    q.x += q.vx*dt; q.y += q.vy*dt;
-  }
-  // draw
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  ctx.globalCompositeOperation = "source-over";
-  ctx.fillStyle = "#05070B"; ctx.fillRect(0,0,W,H);
-  // airflow motes
-  ctx.fillStyle = "rgba(150,170,200,.28)";
-  motes.forEach(m=>{
-    m.x += (p.flow*0.0022 + 0.0004)*m.s*dt*60; if (m.x > 1) { m.x -= 1; m.y = Math.random(); }
-    ctx.fillRect(m.x*W, m.y*H, 1.4, 1.4);
-  });
-  // wick
-  ctx.strokeStyle = "#3a4252"; ctx.lineWidth = 2*scale; ctx.lineCap = "round";
-  ctx.beginPath(); ctx.moveTo(cx, cy + 5*scale); ctx.lineTo(cx, cy + 60*scale); ctx.stroke();
-  ctx.fillStyle = "#1a1f29"; ctx.beginPath(); ctx.arc(cx, cy + 3*scale, 3.2*scale, 0, Math.PI*2); ctx.fill();
+  const B=300*sc*p.g, F=p.flow*2.4*sc;
+  for (let i=P.length-1;i>=0;i--){ const q=P[i]; q.age+=dt; if(q.age>q.life){P.splice(i,1);continue;}
+    q.vy-=B*dt; q.vx+=F*dt*.9; q.vx*=(1-1.4*dt); q.vy*=(1-1.4*dt*(1-.5*p.g));
+    q.vx+=(Math.random()-.5)*20*sc*dt; q.vy+=(Math.random()-.5)*20*sc*dt; q.x+=q.vx*dt; q.y+=q.vy*dt; }
 
-  ctx.globalCompositeOperation = "lighter";
-  const soot = Math.pow(p.g, 0.55);
-  for (const q of P){
-    const k = q.age/q.life;
-    const heat = Math.min(1, Math.max(0, (k - 0.12) / 0.45));
-    const t = Math.min(1, soot * heat * 1.15);
-    const spr = SPR[Math.round(t*(SPR.length-1))];
-    const a = (1-k) * (0.045 + 0.26*soot) * Math.min(1, intensity*1.3);
-    const r = q.r * (1 - 0.45*k);
-    ctx.globalAlpha = a; ctx.drawImage(spr, q.x - r, q.y - r, r*2, r*2);
-  }
-  // cool-flame ghost after a quench
-  if (!lit && ghost > 0){
-    const pulse = 0.5 + 0.5*Math.sin(now/600);
-    ctx.globalAlpha = 0.05 * ghost * (0.6 + 0.4*pulse);
-    const r = 34*scale; ctx.drawImage(SPR[2], cx - r, cy - r, r*2, r*2);
-  }
+  ctx.setTransform(DPR,0,0,DPR,0,0); ctx.clearRect(0,0,W,H);
+  const starA = Math.max(0, 1 - p.g*1.6);
+  if (starA>0){ ctx.fillStyle="#fff"; for(const s of stars){ ctx.globalAlpha=starA*(.35+.35*Math.sin(now/900+s.tw)); ctx.fillRect(s.x*W,s.y*H,s.r,s.r);} }
+  // warm floor glow on Earth: the horizon the flame stands on
+  if (p.g > .05){ const gr = ctx.createLinearGradient(0,H*.7,0,H); gr.addColorStop(0,"rgba(255,140,60,0)"); gr.addColorStop(1,`rgba(255,140,60,${.10*p.g})`); ctx.globalAlpha=1; ctx.fillStyle=gr; ctx.fillRect(0,H*.7,W,H*.3); }
   ctx.globalAlpha = 1;
-  if ((now|0) % 6 === 0) updateReadout(false);
-  requestAnimationFrame(step);
-}
-let lastKey = "";
-function updateReadout(force){
-  const p = params(), u = UI[lang];
-  gOut.textContent = p.g.toFixed(2) + " g";
-  oOut.textContent = p.o2 + "%";
-  fOut.textContent = (p.flow === 0 ? "0" : p.flow) + " cm/s";
-  const si = p.g > .6 ? 0 : p.g > .25 ? 1 : p.g > .05 ? 2 : 3;
-  const tg = targetIntensity(p);
-  const state = !lit ? "out" : (tg.v < intensity - .08 || tg.v < .25) ? "weak" : "burn";
-  let nk;
-  if (!lit) nk = outReason || "quench";
-  else if (tg.v === 0) nk = tg.why;
-  else nk = p.g > .6 ? "earth" : p.g > .25 ? "mars" : p.g > .05 ? "moon" : "orbit";
-  const key = [lang,si,state,nk,p.o2>=30].join("|");
-  if (!force && key === lastKey) return; lastKey = key;
-  hudShape.textContent = lit ? u.shape[si] : "—";
-  hudState.textContent = u.st[state];
-  hudBox.className = state === "out" ? "state-out" : "";
-  const n = u.notes[nk];
-  note.innerHTML = `<span class="src">${esc(n[0])}</span>${esc(n[1])}${(p.o2>=30 && lit) ? esc(u.notes.rich) : ""}`;
-  reig.hidden = lit; reig.textContent = u.reig;
-  document.querySelectorAll("#gChips .chip").forEach(c => c.setAttribute("aria-pressed", Math.abs(+c.dataset.g - p.g) < .005));
-}
-[gIn,oIn,fIn].forEach(el => el.addEventListener("input", () => updateReadout(true)));
-document.querySelectorAll("#gChips .chip").forEach(c => c.addEventListener("click", () => { gIn.value = c.dataset.g; updateReadout(true); }));
-document.getElementById("killFans").addEventListener("click", () => { fIn.value = 0; updateReadout(true); });
-reig.addEventListener("click", () => {
-  const p = params();
-  if (targetIntensity(p).v === 0){ if (p.o2 < 22) oIn.value = 30; if (12*Math.sqrt(p.g) + p.flow < 3) fIn.value = 8; }
-  lit = true; intensity = .15; ghost = 0; outReason = null; updateReadout(true);
-});
-if ("IntersectionObserver" in window){
-  new IntersectionObserver(es => es.forEach(e => running = e.isIntersecting)).observe(cv);
-}
+  ctx.strokeStyle="rgba(244,239,231,.22)"; ctx.lineWidth=2*sc; ctx.lineCap="round";
+  ctx.beginPath(); ctx.moveTo(cx,cy+5*sc); ctx.lineTo(cx,cy+60*sc); ctx.stroke();
+  ctx.globalCompositeOperation="lighter";
+  const soot=Math.pow(p.g,.55), fade = mobile.matches ? .55 : 1;
+  for (const q of P){ const k=q.age/q.life, heat=Math.min(1,Math.max(0,(k-.12)/.45)), t=Math.min(1,soot*heat*1.15);
+    ctx.globalAlpha=(1-k)*(.045+.26*soot)*Math.min(1,intensity*1.3)*fade; const r=q.r*(1-.45*k);
+    ctx.drawImage(SPR[Math.round(t*(SPR.length-1))],q.x-r,q.y-r,r*2,r*2); }
+  if (!lit && ghost>0){ ctx.globalAlpha=.06*ghost*(.6+.4*Math.sin(now/600)); const r=34*sc; ctx.drawImage(SPR[2],cx-r,cy-r,r*2,r*2); }
+  ctx.globalAlpha=1; ctx.globalCompositeOperation="source-over";
 
-renderQ(); renderScore(); renderFolder(); updateReadout(true);
-requestAnimationFrame(step);
+  if (!still.matches){
+    const free = Math.pow(1-p.g,1.6), ts = now/1000;
+    for (const d of drifters){
+      const r = d.el.getBoundingClientRect(); if (r.bottom < -200 || r.top > H+200) continue;
+      const amp = 12*free;
+      d.el.style.transform = amp<.05 ? "" : `translate(${(Math.sin(ts*.37+d.s)*amp).toFixed(2)}px,${(Math.cos(ts*.29+d.s*1.3)*amp).toFixed(2)}px) rotate(${(Math.sin(ts*.21+d.s)*free*.9).toFixed(2)}deg)`;
+    }
+    const fr = forget.getBoundingClientRect();
+    if (fr.bottom > -100 && fr.top < H+100){
+      for (const L of letters){
+        const amp = 24*free*L.a;
+        L.el.style.transform = amp<.05 ? "" : `translate(${(Math.sin(ts*.5+L.s)*amp*.5).toFixed(2)}px,${(Math.cos(ts*.43+L.s)*amp).toFixed(2)}px) rotate(${(Math.sin(ts*.31+L.s)*free*14*L.a).toFixed(2)}deg)`;
+      }
+    }
+  }
+  if (labOn) readout(false);
+  requestAnimationFrame(frame);
+}
+readout(true);
+requestAnimationFrame(frame);
 })();
 </script>
 </body>
